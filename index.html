@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light" />
+    <meta
+      name="description"
+      content="A configurable, privacy-conscious smoke reconstruction user study."
+    />
+    <title>Smoke Reconstruction User Study</title>
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="styles.css?v=2.2.0" />
+  </head>
+  <body>
+    <noscript>
+      <div class="noscript">This study requires JavaScript to record ratings.</div>
+    </noscript>
+
+    <header class="site-header">
+      <a class="brand" href="#" aria-label="Study home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span id="header-title">Smoke Reconstruction User Study</span>
+      </a>
+
+      <div id="progress-wrap" class="progress-wrap" hidden>
+        <div class="progress-copy">
+          <span id="progress-label">Trial 1 of 6</span>
+          <span id="progress-percent">17%</span>
+        </div>
+        <div
+          class="progress-track"
+          role="progressbar"
+          aria-label="Study progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <span id="progress-bar"></span>
+        </div>
+      </div>
+
+    </header>
+
+    <main id="app" tabindex="-1">
+      <section id="intro-view" class="view intro-view" aria-labelledby="study-title">
+        <div class="intro-hero">
+          <p class="eyebrow">Smoke reconstruction study</p>
+          <h1 id="study-title">Smoke Reconstruction User Study</h1>
+          <p id="study-description" class="hero-copy">
+            Compare each reconstructed smoke animation with its ground-truth sequence.
+          </p>
+        </div>
+
+        <div class="intro-grid">
+          <section class="panel" aria-labelledby="instructions-title">
+            <div class="section-heading">
+              <span class="step-number" aria-hidden="true">1</span>
+              <div>
+                <p class="section-kicker">Before you begin</p>
+                <h2 id="instructions-title">How to complete the study</h2>
+              </div>
+            </div>
+            <ol id="instruction-list" class="instruction-list"></ol>
+            <div class="tip-box">
+              <span aria-hidden="true">◎</span>
+              <p id="study-tip">Watch each animation for several loops before rating its motion.</p>
+            </div>
+          </section>
+
+          <section class="panel consent-panel" aria-labelledby="consent-title">
+            <div class="section-heading">
+              <span class="step-number" aria-hidden="true">2</span>
+              <div>
+                <p class="section-kicker">Participation</p>
+                <h2 id="consent-title">Consent</h2>
+              </div>
+            </div>
+
+            <label class="field-label" for="participant-identifier">
+              Name or nickname/pseudonym <span id="participant-optional">(required)</span>
+            </label>
+            <input
+              id="participant-identifier"
+              class="text-input"
+              type="text"
+              maxlength="64"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Enter your name, nickname, or pseudonym"
+            />
+            <p class="field-help">Use an identifier the study organizer can recognize.</p>
+
+            <label class="consent-check">
+              <input id="consent-checkbox" type="checkbox" />
+              <span id="consent-text">
+                I have read the information above and voluntarily agree to participate.
+              </span>
+            </label>
+
+            <p id="intro-error" class="inline-error" role="alert" hidden></p>
+            <button id="start-button" class="button button-primary button-wide" type="button">
+              Begin study
+              <span aria-hidden="true">→</span>
+            </button>
+            <p id="estimate" class="estimate">Estimated time: 8–12 minutes</p>
+          </section>
+        </div>
+      </section>
+
+      <section id="trial-view" class="view trial-view" aria-live="polite" hidden>
+        <div class="trial-heading">
+          <div>
+            <p id="trial-kicker" class="eyebrow">Trial 01</p>
+            <h1 id="trial-title">Compare the smoke animations</h1>
+            <p id="trial-prompt" class="trial-prompt"></p>
+          </div>
+          <div class="legend" aria-label="Rating scale">
+            <span><b>1</b> Poor</span>
+            <span class="legend-line" aria-hidden="true"></span>
+            <span><b>7</b> Excellent</span>
+          </div>
+        </div>
+
+        <aside id="attention-banner" class="attention-banner" hidden>
+          <span class="attention-icon" aria-hidden="true">!</span>
+          <p id="attention-prompt"></p>
+        </aside>
+
+        <div class="media-toolbar" aria-label="Media playback controls">
+          <button id="play-all-button" class="button button-quiet button-small" type="button">
+            ▶ Play all
+          </button>
+          <button id="pause-all-button" class="button button-quiet button-small" type="button">
+            Ⅱ Pause all
+          </button>
+          <span>Candidate labels are randomized for every participant.</span>
+        </div>
+
+        <div id="comparison-grid" class="comparison-grid"></div>
+
+        <div id="validation-summary" class="validation-summary" role="alert" hidden></div>
+
+        <nav class="trial-nav" aria-label="Study navigation">
+          <button id="previous-button" class="button button-secondary" type="button">
+            <span aria-hidden="true">←</span>
+            Previous
+          </button>
+          <button id="next-button" class="button button-primary" type="button">
+            Save &amp; continue
+            <span aria-hidden="true">→</span>
+          </button>
+        </nav>
+      </section>
+
+      <section id="review-view" class="view review-view" aria-labelledby="review-title" hidden>
+        <div class="review-card">
+          <div class="review-icon" aria-hidden="true">✓</div>
+          <p class="eyebrow">Almost finished</p>
+          <h1 id="review-title">Review and submit</h1>
+          <p>
+            All required ratings are complete. You can return to any trial before submitting your
+            response.
+          </p>
+
+          <div id="review-list" class="review-list"></div>
+
+          <label class="field-label" for="final-comments">Additional comments (optional)</label>
+          <textarea
+            id="final-comments"
+            class="text-input text-area"
+            maxlength="2000"
+            rows="4"
+            placeholder="Anything unusual about the smoke animations or your ratings?"
+          ></textarea>
+
+          <div id="demo-notice" class="demo-notice" hidden>
+            <strong>Submission unavailable:</strong> the study administrator has not configured the
+            Google Apps Script endpoint yet.
+          </div>
+
+          <p id="submit-error" class="inline-error" role="alert" hidden></p>
+          <div class="review-actions">
+            <button id="back-to-trials-button" class="button button-secondary" type="button">
+              ← Back to trials
+            </button>
+            <button id="submit-button" class="button button-primary" type="button">
+              Submit responses
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="success-view" class="view success-view" aria-labelledby="success-title" hidden>
+        <div class="success-card">
+          <div class="success-mark" aria-hidden="true">✓</div>
+          <p class="eyebrow">Response recorded</p>
+          <h1 id="success-title">Thank you for participating</h1>
+          <p id="success-message">Your response has been submitted successfully.</p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span id="footer-study-id"></span>
+      <span>Responses are stored for research purposes.</span>
+    </footer>
+
+    <template id="media-card-template">
+      <article class="media-card">
+        <div class="card-heading">
+          <div>
+            <p class="card-kicker"></p>
+            <h2 class="card-title"></h2>
+          </div>
+          <span class="reference-badge" hidden>Fixed reference</span>
+        </div>
+        <div class="video-shell">
+          <video controls playsinline preload="metadata"></video>
+          <img class="animated-image" alt="" hidden />
+          <div class="video-placeholder" hidden>
+            <span aria-hidden="true">▶</span>
+            <strong>Media not added yet</strong>
+            <small></small>
+          </div>
+        </div>
+        <p class="media-caption"></p>
+        <div class="ratings"></div>
+      </article>
+    </template>
+
+    <template id="rating-template">
+      <div class="rating-row">
+        <div class="rating-heading">
+          <div>
+            <label></label>
+            <p></p>
+          </div>
+          <output>Not rated</output>
+        </div>
+        <input type="range" />
+        <div class="scale-labels" aria-hidden="true">
+          <span>Poor</span>
+          <span>Excellent</span>
+        </div>
+      </div>
+    </template>
+
+    <script src="config.js?v=2.2.0"></script>
+    <script src="app.js?v=2.2.0"></script>
+  </body>
+</html>

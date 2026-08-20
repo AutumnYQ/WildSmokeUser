@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">Video placeholder</title>
+  <desc id="desc">Dark placeholder used until a study video is added.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#17202d"/>
+      <stop offset="1" stop-color="#2d3c54"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="55%">
+      <stop offset="0" stop-color="#526b98" stop-opacity=".32"/>
+      <stop offset="1" stop-color="#17202d" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#background)"/>
+  <rect width="1280" height="720" fill="url(#glow)"/>
+  <g fill="none" stroke="#aebbd0" stroke-width="5" opacity=".55">
+    <rect x="492" y="246" width="296" height="196" rx="28"/>
+    <path d="m607 301 97 43a18 18 0 0 1 0 33l-97 43a18 18 0 0 1-25-17v-85a18 18 0 0 1 25-17Z" fill="#aebbd0" stroke="none"/>
+  </g>
+  <text x="640" y="505" fill="#c9d3e1" font-family="Arial, sans-serif" font-size="28" text-anchor="middle">Replace with study video</text>
+</svg>
