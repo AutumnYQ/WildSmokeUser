@@ -14,6 +14,16 @@
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const storageKey = `reconstruction-study:${config.studyId}:${config.studyVersion}`;
   const candidateLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  const derivedOverallMetric = Object.freeze({
+    id: "overall_quality",
+    label: "Overall (mean of 4 metrics)",
+  });
+  const derivedOverallSourceMetricIds = Object.freeze([
+    "visual_quality",
+    "physical_motion",
+    "gt_alignment",
+    "temporal_consistency",
+  ]);
 
   validateConfig();
 
@@ -96,6 +106,12 @@
     const metricIds = config.metrics.map((metric) => metric.id);
     if (new Set(metricIds).size !== metricIds.length || metricIds.includes(undefined)) {
       errors.push("metric ids must be present and unique");
+    }
+    if (metricIds.includes(derivedOverallMetric.id)) {
+      errors.push(`${derivedOverallMetric.id} is calculated automatically and must not be shown as a slider`);
+    }
+    if (derivedOverallSourceMetricIds.some((metricId) => !metricIds.includes(metricId))) {
+      errors.push("all four source metrics for the derived overall score must be configured");
     }
 
     if (errors.length) {
@@ -771,14 +787,14 @@
           candidateId,
           displayPosition: position + 1,
           displayLabel: candidateLabel(position),
-          scores: { ...(state.responses[trialId]?.[candidateId] || {}) },
+          scores: buildCandidateScores(trialId, candidateId),
         })),
       };
     });
     const checkedTrials = trials.filter((trial) => trial.isAttentionCheck);
 
     return {
-      schemaVersion: "1.1",
+      schemaVersion: "1.2",
       studyId: config.studyId,
       studyVersion: config.studyVersion,
       consentVersion: config.consentVersion,
@@ -800,7 +816,17 @@
         candidateOrders: structuredCloneSafe(state.candidateOrders),
       },
       scale: { ...config.ratingScale },
-      metrics: config.metrics.map(({ id, label }) => ({ id, label })),
+      metrics: [
+        ...config.metrics.map(({ id, label }) => ({ id, label })),
+        { ...derivedOverallMetric },
+      ],
+      derivedMetrics: [
+        {
+          ...derivedOverallMetric,
+          calculation: "arithmetic_mean",
+          sourceMetricIds: [...derivedOverallSourceMetricIds],
+        },
+      ],
       attentionChecks: {
         total: checkedTrials.length,
         passed: checkedTrials.filter((trial) => trial.attentionCheckPassed).length,
@@ -811,6 +837,27 @@
       trials,
       additionalComments: state.additionalComments || "",
     };
+  }
+
+  function buildCandidateScores(trialId, candidateId) {
+    const savedScores = state.responses[trialId]?.[candidateId] || {};
+    const scores = {};
+
+    config.metrics.forEach((metric) => {
+      const value = Number(savedScores[metric.id]);
+      if (Number.isFinite(value)) {
+        scores[metric.id] = value;
+      }
+    });
+
+    const sourceValues = derivedOverallSourceMetricIds
+      .map((metricId) => Number(savedScores[metricId]))
+      .filter(Number.isFinite);
+    if (sourceValues.length === derivedOverallSourceMetricIds.length) {
+      const mean = sourceValues.reduce((total, value) => total + value, 0) / sourceValues.length;
+      scores[derivedOverallMetric.id] = Math.round(mean * 100) / 100;
+    }
+    return scores;
   }
 
   function evaluateAttentionCheck(trial) {

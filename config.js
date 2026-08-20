@@ -7,7 +7,7 @@
  */
 window.STUDY_CONFIG = {
   studyId: "smoke-reconstruction-user-study-2026",
-  studyVersion: "2.2.0",
+  studyVersion: "2.3.0",
   consentVersion: "1.1",
 
   title: "Smoke Reconstruction User Study",
@@ -63,7 +63,8 @@ window.STUDY_CONFIG = {
    * - Physical Motion focuses on flow dynamics rather than static appearance.
    * - Alignment with GT is the global space-time match to the reference.
    * - Temporal Consistency isolates animation artifacts from single-frame quality.
-   * - Overall Quality captures the participant's holistic judgment.
+   * Overall quality is not participant-rated; app.js stores the arithmetic mean
+   * of these four metrics as the derived overall_quality score.
    */
   metrics: [
     {
@@ -88,12 +89,6 @@ window.STUDY_CONFIG = {
       id: "temporal_consistency",
       label: "Temporal Consistency",
       description: "Smooth evolution over time without flicker, popping, jitter, or discontinuities.",
-      required: true,
-    },
-    {
-      id: "overall_quality",
-      label: "Overall Reconstruction Quality",
-      description: "Overall fidelity and usefulness of this reconstruction relative to the GT sequence.",
       required: true,
     },
   ],
@@ -180,7 +175,7 @@ window.STUDY_CONFIG = {
       ],
       // Optional instructional attention check:
       // attentionCheck: {
-      //   metricId: "overall_quality",
+      //   metricId: "temporal_consistency",
       //   candidateId: "option_b",
       //   expectedValue: 6,
       //   tolerance: 0,
